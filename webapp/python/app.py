@@ -33,14 +33,14 @@ def dbh():
         return flask.g.db
 
     flask.g.db = MySQLdb.connect(
-        host   = config['db_host'],
-        port   = config['db_port'],
-        user   = config['db_user'],
-        passwd = config['db_password'],
-        db     = 'isubata',
-        charset= 'utf8mb4',
-        cursorclass= MySQLdb.cursors.DictCursor,
-        autocommit = True,
+        host=config['db_host'],
+        port=config['db_port'],
+        user=config['db_user'],
+        passwd=config['db_password'],
+        db='isubata',
+        charset='utf8mb4',
+        cursorclass=MySQLdb.cursors.DictCursor,
+        autocommit=True,
     )
     cur = flask.g.db.cursor()
     cur.execute("SET SESSION sql_mode='TRADITIONAL,NO_AUTO_VALUE_ON_ZERO,ONLY_FULL_GROUP_BY'")
@@ -78,7 +78,7 @@ def db_add_message(cur, channel_id, user_id, content):
 def login_required(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        if not "user_id" in flask.session:
+        if "user_id" not in flask.session:
             return flask.redirect('/login', 303)
         flask.request.user_id = user_id = flask.session['user_id']
         user = db_get_user(dbh().cursor(), user_id)

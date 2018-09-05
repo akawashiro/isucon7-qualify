@@ -9,7 +9,7 @@ import random
 import string
 import tempfile
 import time
-# import redis
+import redis
 
 
 static_folder = pathlib.Path(__file__).resolve().parent.parent / 'public'

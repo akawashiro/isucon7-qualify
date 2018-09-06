@@ -376,6 +376,9 @@ def post_profile():
         cur.execute("INSERT INTO image (name, data) VALUES (%s, _binary %s)", (avatar_name, avatar_data))
         cur.execute("UPDATE user SET avatar_icon = %s WHERE id = %s", (avatar_name, user_id))
 
+        rcon = redis.StrictRedis(host='localhost', port=6379, db=0)
+        rcon.set(avatar_name, avatar_data)
+
     if display_name:
         cur.execute("UPDATE user SET display_name = %s WHERE id = %s", (display_name, user_id))
 

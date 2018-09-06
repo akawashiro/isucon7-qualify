@@ -387,12 +387,19 @@ def ext2mime(ext):
 
 @app.route('/icons/<file_name>')
 def get_icon(file_name):
+    ext = os.path.splitext(file_name)[1] if '.' in file_name else ''
+    mime = ext2mime(ext)
+
+    rcon = redis.StrictRedis(host='localhost', port=6379, db=0)
+    rval = rcon.get(file_name)
+    if rval is not None:
+        return flask.Response(rval, mimetype=mime)
+
     cur = dbh().cursor()
     cur.execute("SELECT * FROM image WHERE name = %s", (file_name,))
     row = cur.fetchone()
-    ext = os.path.splitext(file_name)[1] if '.' in file_name else ''
-    mime = ext2mime(ext)
     if row and mime:
+        rcon.set(file_name, row['data'])
         return flask.Response(row['data'], mimetype=mime)
     flask.abort(404)
 

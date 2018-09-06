@@ -48,12 +48,16 @@ def dbh():
 
 
 # Initialize cache data of image
-rcon = redis.StrictRedis(host='localhost', port=6379, db=0)
-cur = dbh().cursor()
-cur.execute("SELECT * FROM image")
-rows = cur.fetchall()
-for r in rows:
-    rcon.set(r['name'], r['data'])
+def init_image_cache():
+    rcon = redis.StrictRedis(host='localhost', port=6379, db=0)
+    cur = dbh().cursor()
+    cur.execute("SELECT * FROM image")
+    rows = cur.fetchall()
+    for r in rows:
+        rcon.set(r['name'], r['data'])
+
+
+init_image_cache()
 
 
 @app.teardown_appcontext

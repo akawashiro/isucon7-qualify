@@ -47,19 +47,6 @@ def dbh():
     return flask.g.db
 
 
-# Initialize cache data of image
-def init_image_cache():
-    rcon = redis.StrictRedis(host='localhost', port=6379, db=0)
-    cur = dbh().cursor()
-    cur.execute("SELECT * FROM image")
-    rows = cur.fetchall()
-    for r in rows:
-        rcon.set(r['name'], r['data'])
-
-
-init_image_cache()
-
-
 @app.teardown_appcontext
 def teardown(error):
     if hasattr(flask.g, "db"):
@@ -74,6 +61,13 @@ def get_initialize():
     cur.execute("DELETE FROM channel WHERE id > 10")
     cur.execute("DELETE FROM message WHERE id > 10000")
     cur.execute("DELETE FROM haveread")
+
+    rcon = redis.StrictRedis(host='localhost', port=6379, db=0)
+    cur.execute("SELECT * FROM image")
+    rows = cur.fetchall()
+    for r in rows:
+        rcon.set(r['name'], r['data'])
+
     cur.close()
     return ('', 204)
 

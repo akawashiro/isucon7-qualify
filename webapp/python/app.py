@@ -208,7 +208,7 @@ def get_message():
     # cur.execute("SELECT * FROM message WHERE id > %s AND channel_id = %s ORDER BY id DESC LIMIT 100",
     # (last_message_id, channel_id))
     cur.execute("SELECT * FROM message INNER JOIN user on user.id = message.id \
-            where message.id > %s AND message.channel_id = %s ORDER BY id DESC LIMIT 100", (last_message_id, channel_id))
+            where message.id > %s AND message.channel_id = %s ORDER BY message.id DESC LIMIT 100", (last_message_id, channel_id))
     rows = cur.fetchall()
     response = []
     for row in rows:
